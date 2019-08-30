@@ -1,0 +1,41 @@
+{
+  "name": "lab-15-api-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "watch": "nodemon index.js",
+    "lint": "eslint \"**/*.js\"",
+    "jsdoc": "jsdoc -c ./docs/config/jsdoc.config.json",
+    "test": "jest",
+    "test-watch": "jest --watchAll",
+    "startDB": "mkdir -p ./.db && mongod --dbpath ./.db"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joanna-401-advanced-javascript/lab-15-api-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joanna-401-advanced-javascript/lab-15-api-server/issues"
+  },
+  "homepage": "https://github.com/joanna-401-advanced-javascript/lab-15-api-server#readme",
+  "dependencies": {
+    "bcrypt": "^3.0.6",
+    "cors": "^2.8.5",
+    "dotenv": "^8.1.0",
+    "eslint": "^6.2.2",
+    "express": "^4.17.1",
+    "jest": "^24.9.0",
+    "jsdoc": "^3.6.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb-memory-server": "^5.2.0",
+    "mongoose": "^5.6.11",
+    "morgan": "^1.9.1",
+    "supergoose": "^0.2.6",
+    "supertest": "^4.0.2"
+  }
+}
