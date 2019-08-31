@@ -25,7 +25,7 @@ users.pre('save', function(next){
     .catch(error => new Error(error));
 });
 
-users.statics.authenticateToken = token => {
+users.statics.authenticateToken = function(token) {
   if (usedTokens.includes(token)){
     throw new Error('Invalid Token');
   } else {
@@ -35,24 +35,24 @@ users.statics.authenticateToken = token => {
       usedTokens.push(token);
     }
 
-    let query = {id: decryptedToken.id};
+    let query = {_id: decryptedToken.id};
     return this.findOne(query);
   }
 };
 
-users.statics.authenticateBasic = auth => {
+users.statics.authenticateBasic = function(auth) {
   let query = {username: auth.username};
   return this.findOne(query)
     .then(user => user ? user.comparePassword(auth.password) : null)
     .catch(error => error);
 };
 
-users.methods.comparePassword = password => {
+users.methods.comparePassword = function(password) {
   return bcrypt.compare(password, this.password)
     .then(isValid => isValid? this : null);
 };
 
-users.methods.generateToken = (type) => {
+users.methods.generateToken = function(type) {
   let token = {
     id: this._id,
     role: this.role,
@@ -63,7 +63,6 @@ users.methods.generateToken = (type) => {
   if (type !== 'key' && TOKEN_EXPIRE){
     options = {expiresIn: TOKEN_EXPIRE};
   }
-
   return jwt.sign(token, SECRET, options);
 };
 

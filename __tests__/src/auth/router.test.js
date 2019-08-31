@@ -15,7 +15,7 @@ let users = {
   user: {username: 'user', password: 'password', role: 'user'},
 };
 
-let testToken = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkNjg2NGVmY2RlYjM1ZDQzYWYyMTMzNCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNTY3MTIyNjcxfQ.psQ02E1pkFZ8oEV4w2F5ZsLq_dnyKh9sDDlBSsML0_s';
+// let testToken = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkNjg2NGVmY2RlYjM1ZDQzYWYyMTMzNCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNTY3MTIyNjcxfQ.psQ02E1pkFZ8oEV4w2F5ZsLq_dnyKh9sDDlBSsML0_s';
 
 beforeAll(supergoose.startDB);
 afterAll(supergoose.stopDB);
@@ -29,29 +29,31 @@ describe('Auth Router', () => {
       let encodedToken;
       let id;
       
-      it('can create one', () => {
+      test('can create one', () => {
         return mockRequest.post('/signup')
           .send(users[userType])
           .then(results => {
-            var token = jwt.verify(results.text, process.env.SECRET);
+            let token = jwt.verify(results.text, process.env.SECRET);
             id = token.id;
             encodedToken = results.text;
             expect(token.id).toBeDefined();
           });
       });
 
-      it('can signin with basic', () => {
+      test('can signin with basic', () => {
         return mockRequest.post('/signin')
           .auth(users[userType].username, users[userType].password)
           .then(results => {
-            var token = jwt.verify(results.text, process.env.SECRET);
+            let token = jwt.verify(results.text, process.env.SECRET);
             expect(token.id).toEqual(id);
           });
       });
 
+      // superagent bearer token authorization
+      //
       // it('can signin with bearer', () => {
       //   return mockRequest.post('/signin')
-      //     .auth(testToken)
+      //     .auth(testToken, {type: bearer})
       //     .then(results => {
       //       // var token = jwt.verify(results.text, process.env.SECRET);
       //       expect(results).toEqual(id);

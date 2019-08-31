@@ -12,6 +12,7 @@ const app = express();
 const errorHandler = require('./middleware/500');
 const notFound = require('./middleware/404');
 const authRouter = require('./router');
+const apiRouter = require('./api/v1');
 
 // App level middleware
 app.use(cors());
@@ -21,6 +22,7 @@ app.use(express.urlencoded({extended: true}));
 
 // Router
 app.use(authRouter);
+app.use(apiRouter);
 
 // Catch-all
 app.use(notFound);

@@ -20,7 +20,7 @@ module.exports = (request, response, next) => {
   }
 
   function _authBasic(authString){
-    let base64Buffer = Buffer.from(authString);
+    let base64Buffer = Buffer.from(authString, 'base64');
     let bufferString = base64Buffer.toString();
     let [username, password] = bufferString.split(':');
     let auth = {username, password};
@@ -30,9 +30,11 @@ module.exports = (request, response, next) => {
       .catch(_authError);
   }
 
-  function _authBearer(authString){
+  function _authBearer(authString) {
     return User.authenticateToken(authString)
-      .then(user => _authenticate(user))
+      .then(user => {
+        _authenticate(user);
+      })
       .catch(_authError);
   }
 

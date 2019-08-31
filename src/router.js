@@ -8,7 +8,7 @@ const auth = require('./middleware/auth');
 const oauth = require('./oauth/google');
 
 authRouter.post('/signup', (request, response, next) => {
-  let user = new User;
+  let user = new User(request.body);
   user.save()
     .then(user => {
       request.token = user.generateToken();
