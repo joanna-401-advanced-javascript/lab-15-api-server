@@ -1,17 +1,16 @@
 'use strict';
 /**
  * API Server Module
- * @module src/auth/middleware
+ * @module src/middleware/auth
  */
 
 const User = require('../model/users-model');
 
-module.exports = (req, res, next) => {
-  
+module.exports = (request, response, next) => {
   try {
-    let [authType, authString] = req.headers.authorization.split(/\s+/);
-    
-    switch( authType.toLowerCase() ) {
+    let [authType, authString] = request.headers.authorization.split(/\s+/);
+
+    switch (authType.toLowerCase()){
     case 'basic':
       return _authBasic(authString);
     case 'bearer':
@@ -19,26 +18,26 @@ module.exports = (req, res, next) => {
     default:
       return _authError();
     }
-  }
-  catch(e) {
-    next(e);
+
+  } catch (error){
+    _authError();
   }
 
   /**
    * This parses basic authentication
-   * @param str
+   * @param string
    * @returns {Promise}
    * @private
    */
-  function _authBasic(authString) {
+  function _authBasic(authString){
     let base64Buffer = Buffer.from(authString, 'base64');
     let bufferString = base64Buffer.toString();
     let [username, password] = bufferString.split(':');
-    let auth = {username,password};
-    
+    let auth = {username, password};
+
     return User.authenticateBasic(auth)
-      .then(user => _authenticate(user) )
-      .catch(next);
+      .then(user => _authenticate(user))
+      .catch(_authError);
   }
 
   /**
@@ -49,8 +48,10 @@ module.exports = (req, res, next) => {
    */
   function _authBearer(authString) {
     return User.authenticateToken(authString)
-      .then(user => _authenticate(user))
-      .catch(next);
+      .then(user => {
+        _authenticate(user);
+      })
+      .catch(_authError);
   }
 
   /**
@@ -58,17 +59,12 @@ module.exports = (req, res, next) => {
    * @param user
    * @private
    */
-  function _authenticate(user) {
-    if(user) {
-      req.user = user;
-      if(process.env.REMEMBER === 'yes'){
-        req.token = user.generateTimedToken();
-      } else {
-        req.token = user.generateToken();
-      }
+  function _authenticate(user){
+    if(user){
+      request.user = user;
+      request.token = user.generateToken();
       next();
-    }
-    else {
+    } else {
       _authError();
     }
   }
@@ -77,8 +73,7 @@ module.exports = (req, res, next) => {
    * This throws an error if the user ID or password is invalid
    * @private
    */
-  function _authError() {
+  function _authError(){
     next('Invalid User ID/Password');
   }
-  
 };

@@ -3,7 +3,7 @@
 process.env.SECRET='test';
 
 const supergoose = require('../../supergoose');
-const auth = require('../../../src/middleware/middleware');
+const auth = require('../../../src/middleware/auth');
 const Users = require('../../../src/model/users-model');
 
 let users = {
@@ -40,6 +40,8 @@ describe('Auth Middleware', () => {
       let next = jest.fn();
       let middleware = auth;
 
+      console.log('passing test', middleware);
+
       return middleware(req, res, next)
         .then(() => {
           expect(next).toHaveBeenCalledWith(errorObject);
@@ -68,12 +70,14 @@ describe('Auth Middleware', () => {
     it('logs in an admin user with the right token', () => {
       let req = {
         headers: {
-          authorization: 'Bearer YWRtaW46cGFzc3dvcmQ=',
+          authorization: `Bearer ${cachedToken}`,
         },
       };
       let res = {};
       let next = jest.fn();
       let middleware = auth;
+
+      console.log('failing test', middleware);
 
       return middleware(req,res,next)
         .then( () => {
