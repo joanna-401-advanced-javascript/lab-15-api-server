@@ -1,7 +1,7 @@
 'use strict';
 /**
  * API Server Module
- * @module src/models/mongo
+ * @module src/model/mongo
  */
 
 class Model {

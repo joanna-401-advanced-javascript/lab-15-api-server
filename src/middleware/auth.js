@@ -1,4 +1,8 @@
 'use strict';
+/**
+ * API Server Module
+ * @module src/middleware/auth
+ */
 
 const User = require('../model/users-model');
 
@@ -19,6 +23,12 @@ module.exports = (request, response, next) => {
     _authError();
   }
 
+  /**
+   * This parses basic authentication
+   * @param string
+   * @returns {Promise}
+   * @private
+   */
   function _authBasic(authString){
     let base64Buffer = Buffer.from(authString, 'base64');
     let bufferString = base64Buffer.toString();
@@ -30,6 +40,12 @@ module.exports = (request, response, next) => {
       .catch(_authError);
   }
 
+  /**
+   * This sends the authString to be authenticated, if a token
+   * @param authString
+   * @returns {Promise}
+   * @private
+   */
   function _authBearer(authString) {
     return User.authenticateToken(authString)
       .then(user => {
@@ -38,6 +54,11 @@ module.exports = (request, response, next) => {
       .catch(_authError);
   }
 
+  /**
+   * This assigns the user and token
+   * @param user
+   * @private
+   */
   function _authenticate(user){
     if(user){
       request.user = user;
@@ -48,6 +69,10 @@ module.exports = (request, response, next) => {
     }
   }
 
+  /**
+   * This throws an error if the user ID or password is invalid
+   * @private
+   */
   function _authError(){
     next('Invalid User ID/Password');
   }
